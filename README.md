@@ -4,8 +4,7 @@ Tools for integrating Ecto with Spandex
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `spandex_ecto` to your list of dependencies in `mix.exs`:
+Add `spandex_ecto` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -17,7 +16,7 @@ end
 
 Configuration
 
-```
+```elixir
 config :spandex_ecto, SpandexEcto.EctoLogger,
   service: :ecto, # Optional
   tracer: MyApp.Tracer, # Required
