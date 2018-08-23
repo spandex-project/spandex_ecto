@@ -15,6 +15,15 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/spandex_ecto](https://hexdocs.pm/spandex_ecto).
+Configuration
+
+```
+config :spandex_ecto, SpandexEcto.EctoLogger,
+  service: :ecto, # Optional
+  tracer: MyApp.Tracer, # Required
+  otp_app: :my_app # Required - should line up with the otp app of the tracer
+
+config :my_app, MyApp.Repo,
+  loggers: [{Ecto.LogEntry, :log, [:info]}, {SpandexEcto.EctoLogger, :trace, ["database_name"]}]
+
+```
