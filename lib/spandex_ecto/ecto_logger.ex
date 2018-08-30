@@ -14,12 +14,11 @@ defmodule SpandexEcto.EctoLogger do
     config = Application.get_env(:spandex_ecto, __MODULE__)
     otp_app = config[:otp_app] || raise "otp_app is a required option for #{inspect(__MODULE__)}"
     tracer = config[:tracer] || raise "tracer is a required option for #{inspect(__MODULE__)}"
-
     service = config[:service] || :ecto
 
     unless Application.get_env(otp_app, tracer)[:disabled?] do
       now = :os.system_time(:nano_seconds)
-      _ = setup(log_entry, tracer)
+      setup(log_entry, tracer)
       query = string_query(log_entry)
       num_rows = num_rows(log_entry)
 
@@ -42,41 +41,36 @@ defmodule SpandexEcto.EctoLogger do
         ]
       )
 
-      _ = report_error(tracer, log_entry)
+      report_error(tracer, log_entry)
 
       if queue_time != 0 do
-        _ = tracer.start_span("queue")
-
-        _ =
-          tracer.update_span(service: service, start: start, completion_time: start + queue_time)
-
-        _ = tracer.finish_span()
+        tracer.start_span("queue")
+        tracer.update_span(service: service, start: start, completion_time: start + queue_time)
+        tracer.finish_span()
       end
 
       if query_time != 0 do
-        _ = tracer.start_span("run_query")
+        tracer.start_span("run_query")
 
-        _ =
-          tracer.update_span(
-            service: service,
-            start: start + queue_time,
-            completion_time: start + queue_time + query_time
-          )
+        tracer.update_span(
+          service: service,
+          start: start + queue_time,
+          completion_time: start + queue_time + query_time
+        )
 
-        _ = tracer.finish_span()
+        tracer.finish_span()
       end
 
       if decoding_time != 0 do
-        _ = tracer.start_span("decode")
+        tracer.start_span("decode")
 
-        _ =
-          tracer.update_span(
-            service: service,
-            start: start + queue_time + query_time,
-            completion_time: now
-          )
+        tracer.update_span(
+          service: service,
+          start: start + queue_time + query_time,
+          completion_time: now
+        )
 
-        _ = tracer.finish_span()
+        tracer.finish_span()
       end
 
       finish_ecto_trace(log_entry, tracer)
@@ -121,9 +115,7 @@ defmodule SpandexEcto.EctoLogger do
     end
   end
 
-  defp setup(_, _) do
-    :ok
-  end
+  defp setup(_, _), do: :ok
 
   defp report_error(_tracer, %{result: {:ok, _}}), do: :ok
 
@@ -131,9 +123,7 @@ defmodule SpandexEcto.EctoLogger do
     tracer.span_error(%Error{message: inspect(error)}, nil)
   end
 
-  defp string_query(%{query: query}) when is_function(query),
-    do: Macro.unescape_string(query.() || "")
-
+  defp string_query(%{query: query}) when is_function(query), do: Macro.unescape_string(query.() || "")
   defp string_query(%{query: query}) when is_bitstring(query), do: Macro.unescape_string(query)
   defp string_query(_), do: ""
 
@@ -141,14 +131,11 @@ defmodule SpandexEcto.EctoLogger do
   defp num_rows(_), do: 0
 
   def get_time(log_entry, key) do
-    value = Map.get(log_entry, key)
-
-    if is_integer(value) do
-      to_nanoseconds(value)
-    else
-      0
-    end
+    log_entry
+    |> Map.get(key)
+    |> to_nanoseconds()
   end
 
-  defp to_nanoseconds(time), do: System.convert_time_unit(time, :native, :nanoseconds)
+  defp to_nanoseconds(time) when is_integer(time), do: System.convert_time_unit(time, :native, :nanoseconds)
+  defp to_nanoseconds(_time), do: 0
 end
