@@ -5,8 +5,8 @@ defmodule SpandexEcto.MixProject do
     [
       app: :spandex_ecto,
       description: description(),
-      version: "0.1.0",
-      elixir: "~> 1.7",
+      version: "0.2.0",
+      elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package()
@@ -23,7 +23,7 @@ defmodule SpandexEcto.MixProject do
   defp package do
     [
       name: :spandex_ecto,
-      maintainers: ["Zachary Daniel"],
+      maintainers: ["Zachary Daniel", "Greg Mefford"],
       licenses: ["MIT License"],
       links: %{"GitHub" => "https://github.com/spandex-project/spandex_ecto"}
     ]
@@ -38,7 +38,8 @@ defmodule SpandexEcto.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, ">= 0.0.0", only: :dev}
+      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:spandex, "~> 2.2"}
     ]
   end
 end
