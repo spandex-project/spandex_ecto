@@ -5,6 +5,12 @@ defmodule SpandexEcto.EctoLogger do
   query is being run asynchronously (as in the case of parallel preloads).
   """
 
+  alias Spandex.{
+    Span,
+    SpanContext,
+    Trace
+  }
+
   defmodule Error do
     defexception [:message]
   end
@@ -91,28 +97,19 @@ defmodule SpandexEcto.EctoLogger do
 
   defp setup(%{caller_pid: caller_pid}, tracer) when is_pid(caller_pid) do
     if caller_pid == self() do
-      Logger.metadata(trace_id: tracer.current_trace_id(), span_id: tracer.current_span_id())
-
       tracer.start_span("query")
     else
-      trace = Process.info(caller_pid)[:dictionary][:spandex_trace]
+      case Process.info(caller_pid)[:dictionary][:spandex_trace] do
+        nil -> tracer.start_trace("query")
 
-      if trace do
-        trace_id = trace.id
+        %Trace{id: trace_id, stack: [%Span{id: span_id} | _]} ->
+          tracer.continue_trace("query", %SpanContext{trace_id: trace_id, parent_id: span_id})
 
-        span_id =
-          trace
-          |> Map.get(:stack)
-          |> Enum.at(0, %{})
-          |> Map.get(:id)
-
-        Logger.metadata(trace_id: trace_id, span_id: span_id)
-
-        tracer.continue_trace("query", trace_id, span_id)
-      else
-        tracer.start_trace("query")
+        %Trace{id: trace_id, stack: []} ->
+          tracer.continue_trace("query", %SpanContext{trace_id: trace_id})
       end
     end
+    Logger.metadata(trace_id: tracer.current_trace_id(), span_id: tracer.current_span_id())
   end
 
   defp setup(_, _), do: :ok
