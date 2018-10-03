@@ -95,12 +95,17 @@ defmodule SpandexEcto.EctoLogger do
 
   defp finish_ecto_trace(_, _), do: :ok
 
+  defp setup(%{caller_pid: caller_pid}, tracer) when is_nil(caller_pid) do
+    tracer.start_span("query")
+  end
+
   defp setup(%{caller_pid: caller_pid}, tracer) when is_pid(caller_pid) do
     if caller_pid == self() do
       tracer.start_span("query")
     else
       case Process.info(caller_pid)[:dictionary][:spandex_trace] do
-        nil -> tracer.start_trace("query")
+        nil ->
+          tracer.start_trace("query")
 
         %Trace{id: trace_id, stack: [%Span{id: span_id} | _]} ->
           tracer.continue_trace("query", %SpanContext{trace_id: trace_id, parent_id: span_id})
@@ -109,6 +114,7 @@ defmodule SpandexEcto.EctoLogger do
           tracer.continue_trace("query", %SpanContext{trace_id: trace_id})
       end
     end
+
     Logger.metadata(trace_id: tracer.current_trace_id(), span_id: tracer.current_span_id())
   end
 
