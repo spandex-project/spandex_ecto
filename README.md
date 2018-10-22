@@ -1,10 +1,10 @@
 # SpandexEcto
 
-[![CircleCI](https://circleci.com/gh/spandex-project/spandex.svg?style=svg)](https://circleci.com/gh/spandex-project/spandex_ecto)
-[![Inline docs](http://inch-ci.org/github/spandex-project/spandex.svg)](http://inch-ci.org/github/spandex-project/spandex_ecto)
-[![Coverage Status](https://coveralls.io/repos/github/spandex-project/spandex/badge.svg)](https://coveralls.io/github/spandex-project/spandex_ecto)
-[![Hex pm](http://img.shields.io/hexpm/v/spandex.svg?style=flat)](https://hex.pm/packages/spandex_ecto)
-[![Ebert](https://ebertapp.io/github/spandex-project/spandex.svg)](https://ebertapp.io/github/spandex-project/spandex_ecto)
+[![CircleCI](https://circleci.com/gh/spandex-project/spandex_ecto.svg?style=svg)](https://circleci.com/gh/spandex-project/spandex_ecto)
+[![Inline docs](http://inch-ci.org/github/spandex-project/spandex_ecto.svg)](http://inch-ci.org/github/spandex-project/spandex_ecto)
+[![Coverage Status](https://coveralls.io/repos/github/spandex-project/spandex_ecto/badge.svg)](https://coveralls.io/github/spandex-project/spandex_ecto)
+[![Hex pm](http://img.shields.io/hexpm/v/spandex_ecto.svg?style=flat)](https://hex.pm/packages/spandex_ecto)
+[![Ebert](https://ebertapp.io/github/spandex-project/spandex_ecto.svg)](https://ebertapp.io/github/spandex-project/spandex_ecto)
 
 Tools for integrating Ecto with Spandex
 
