@@ -103,7 +103,7 @@ defmodule SpandexEcto.EctoLogger do
     if caller_pid == self() do
       tracer.start_span("query")
     else
-      case Process.info(caller_pid)[:dictionary][:spandex_trace] do
+      case Process.info(caller_pid, :dictionary)[:spandex_trace] do
         nil ->
           tracer.start_trace("query")
 
