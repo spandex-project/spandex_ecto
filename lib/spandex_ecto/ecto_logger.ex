@@ -14,7 +14,7 @@ defmodule SpandexEcto.EctoLogger do
     config = Application.get_env(:spandex_ecto, __MODULE__)
     tracer = config[:tracer] || raise "tracer is a required option for #{inspect(__MODULE__)}"
     service = config[:service] || :ecto
-    truncate = config[:truncate] || 4000
+    truncate = config[:truncate] || 5000
 
     if tracer.current_trace_id() do
       now = :os.system_time(:nano_seconds)
