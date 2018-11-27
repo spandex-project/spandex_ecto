@@ -29,7 +29,7 @@ config :spandex_ecto, SpandexEcto.EctoLogger,
   otp_app: :my_app # Required - should line up with the otp app of the tracer
 
 # Be aware that this is a *compile* time configuration. As such, if you change this you
-# will want to do `mix deps.compile --force ecto`
+# may need to `mix compile --force` and/or `mix deps.compile --force ecto`
 config :my_app, MyApp.Repo,
   loggers: [{Ecto.LogEntry, :log, [:info]}, {SpandexEcto.EctoLogger, :trace, ["database_name"]}]
 
