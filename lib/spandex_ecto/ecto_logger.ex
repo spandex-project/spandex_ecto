@@ -52,7 +52,6 @@ defmodule SpandexEcto.EctoLogger do
           db: database
         ]
       )
-      |> IO.inspect()
 
       Logger.metadata(trace_id: tracer.current_trace_id(), span_id: tracer.current_span_id())
 
