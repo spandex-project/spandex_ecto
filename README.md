@@ -8,6 +8,14 @@
 
 Tools for integrating Ecto with Spandex
 
+## Limitations
+
+Due to some recent changes in Ecto, we can no longer effectively trace the
+execution of parallel preloads. All other queries work fine, but until we figure
+something out that leverages either telemetry or until the task feature listed
+[here](https://github.com/elixir-ecto/ecto/issues/2843) is added to the
+language, we won't be able to support tracing parallel preloads.
+
 ## Installation
 
 Add `spandex_ecto` to your list of dependencies in `mix.exs`:

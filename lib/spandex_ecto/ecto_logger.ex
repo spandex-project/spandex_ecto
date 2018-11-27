@@ -86,39 +86,37 @@ defmodule SpandexEcto.EctoLogger do
   end
 
   defp finish_ecto_trace(%{caller_pid: caller_pid}, tracer) do
-    if caller_pid != self() do
-      tracer.finish_trace()
-    else
+    # See explanation in `setup/2`
+    if caller_pid == self() do
       tracer.finish_span()
     end
   end
 
-  defp finish_ecto_trace(_, _), do: :ok
+  defp finish_ecto_trace(_, tracer) do
+    tracer.finish_span()
+  end
 
   defp setup(%{caller_pid: caller_pid}, tracer) when is_nil(caller_pid) do
     tracer.start_span("query")
   end
 
   defp setup(%{caller_pid: caller_pid}, tracer) when is_pid(caller_pid) do
+    # We can't rely on caller pid being present, and sending unlinked data in the meantime is not an option.
+    # The logic for accessing the process dictionary of the caller was also just plain incorrect.
+    # We're going to just have to accept that parallel preloads cannot be tracked until this module is made
+    # better. For more information, see: https://github.com/elixir-ecto/ecto/issues/2843
     if caller_pid == self() do
       tracer.start_span("query")
-    else
-      case Process.info(caller_pid, :dictionary)[:spandex_trace] do
-        nil ->
-          tracer.start_trace("query")
 
-        %Trace{id: trace_id, stack: [%Span{id: span_id} | _]} ->
-          tracer.continue_trace("query", %SpanContext{trace_id: trace_id, parent_id: span_id})
-
-        %Trace{id: trace_id, stack: []} ->
-          tracer.continue_trace("query", %SpanContext{trace_id: trace_id})
-      end
+      Logger.metadata(trace_id: tracer.current_trace_id(), span_id: tracer.current_span_id())
     end
 
-    Logger.metadata(trace_id: tracer.current_trace_id(), span_id: tracer.current_span_id())
+
   end
 
-  defp setup(_, _), do: :ok
+  defp setup(_, tracer) do
+    tracer.start_span("query")
+  end
 
   defp report_error(_tracer, %{result: {:ok, _}}), do: :ok
 
