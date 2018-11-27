@@ -8,6 +8,14 @@
 
 Tools for integrating Ecto with Spandex
 
+## Limitations
+
+Due to some recent changes in Ecto, we can no longer effectively trace the
+execution of parallel preloads. All other queries work fine, but until we figure
+something out that leverages either telemetry or until the task feature listed
+[here](https://github.com/elixir-ecto/ecto/issues/2843) is added to the
+language, we won't be able to support tracing parallel preloads.
+
 ## Installation
 
 Add `spandex_ecto` to your list of dependencies in `mix.exs`:
@@ -26,7 +34,6 @@ Configuration
 config :spandex_ecto, SpandexEcto.EctoLogger,
   service: :ecto, # Optional
   tracer: MyApp.Tracer, # Required
-  otp_app: :my_app # Required - should line up with the otp app of the tracer
 
 # Be aware that this is a *compile* time configuration. As such, if you change this you
 # may need to `mix compile --force` and/or `mix deps.compile --force ecto`

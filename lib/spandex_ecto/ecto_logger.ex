@@ -5,12 +5,6 @@ defmodule SpandexEcto.EctoLogger do
   query is being run asynchronously (as in the case of parallel preloads).
   """
 
-  alias Spandex.{
-    Span,
-    SpanContext,
-    Trace
-  }
-
   defmodule Error do
     defexception [:message]
   end
@@ -18,13 +12,11 @@ defmodule SpandexEcto.EctoLogger do
   def trace(log_entry, database) do
     # Put in your own configuration here
     config = Application.get_env(:spandex_ecto, __MODULE__)
-    otp_app = config[:otp_app] || raise "otp_app is a required option for #{inspect(__MODULE__)}"
     tracer = config[:tracer] || raise "tracer is a required option for #{inspect(__MODULE__)}"
     service = config[:service] || :ecto
 
-    unless Application.get_env(otp_app, tracer)[:disabled?] do
+    if tracer.current_trace_id() do
       now = :os.system_time(:nano_seconds)
-      setup(log_entry, tracer)
       query = string_query(log_entry)
       num_rows = num_rows(log_entry)
 
@@ -34,7 +26,8 @@ defmodule SpandexEcto.EctoLogger do
 
       start = now - (queue_time + query_time + decoding_time)
 
-      tracer.update_span(
+      tracer.start_span(
+        "query",
         start: start,
         completion_time: now,
         service: service,
@@ -46,6 +39,8 @@ defmodule SpandexEcto.EctoLogger do
           db: database
         ]
       )
+
+      Logger.metadata(trace_id: tracer.current_trace_id(), span_id: tracer.current_span_id())
 
       report_error(tracer, log_entry)
 
@@ -79,46 +74,11 @@ defmodule SpandexEcto.EctoLogger do
         tracer.finish_span()
       end
 
-      finish_ecto_trace(log_entry, tracer)
+      tracer.finish_span()
     end
 
     log_entry
   end
-
-  defp finish_ecto_trace(%{caller_pid: caller_pid}, tracer) do
-    if caller_pid != self() do
-      tracer.finish_trace()
-    else
-      tracer.finish_span()
-    end
-  end
-
-  defp finish_ecto_trace(_, _), do: :ok
-
-  defp setup(%{caller_pid: caller_pid}, tracer) when is_nil(caller_pid) do
-    tracer.start_span("query")
-  end
-
-  defp setup(%{caller_pid: caller_pid}, tracer) when is_pid(caller_pid) do
-    if caller_pid == self() do
-      tracer.start_span("query")
-    else
-      case Process.info(caller_pid, :dictionary)[:spandex_trace] do
-        nil ->
-          tracer.start_trace("query")
-
-        %Trace{id: trace_id, stack: [%Span{id: span_id} | _]} ->
-          tracer.continue_trace("query", %SpanContext{trace_id: trace_id, parent_id: span_id})
-
-        %Trace{id: trace_id, stack: []} ->
-          tracer.continue_trace("query", %SpanContext{trace_id: trace_id})
-      end
-    end
-
-    Logger.metadata(trace_id: tracer.current_trace_id(), span_id: tracer.current_span_id())
-  end
-
-  defp setup(_, _), do: :ok
 
   defp report_error(_tracer, %{result: {:ok, _}}), do: :ok
 
