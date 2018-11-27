@@ -57,7 +57,7 @@ defmodule SpandexEcto.MixProject do
     [
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:excoveralls, "~> 0.10", only: :test},
-      {:git_ops, "~> 0.3.3", only: :dev},
+      {:git_ops, "~> 0.5.0", only: :dev},
       {:inch_ex, github: "rrrene/inch_ex", only: [:dev, :test]},
       {:spandex, "~> 2.2"}
     ]
