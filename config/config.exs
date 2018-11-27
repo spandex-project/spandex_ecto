@@ -2,6 +2,19 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
+config :git_ops,
+  mix_project: SpandexEcto.MixProject,
+  changelog_file: "CHANGELOG.md",
+  repository_url: "https://github.com/spandex-project/spandex_ecto",
+  types: [],
+  # Instructs the tool to manage your mix version in your `mix.exs` file
+  # See below for more information
+  manage_mix_version?: true,
+  # Instructs the tool to manage the version in your README.md
+  # Pass in `true` to use `"README.md"` or a string to customize
+  manage_readme_version: "README.md",
+  version_prefix: "v"
+
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
 # file won't be loaded nor affect the parent project. For this reason,

@@ -1,12 +1,14 @@
 defmodule SpandexEcto.MixProject do
   use Mix.Project
 
+  @version "0.2.1"
+
   def project do
     [
       app: :spandex_ecto,
       description: description(),
       docs: docs(),
-      version: "0.2.1",
+      version: @version,
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
@@ -55,6 +57,7 @@ defmodule SpandexEcto.MixProject do
     [
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:excoveralls, "~> 0.10", only: :test},
+      {:git_ops, "~> 0.3.3", only: :dev},
       {:inch_ex, github: "rrrene/inch_ex", only: [:dev, :test]},
       {:spandex, "~> 2.2"}
     ]
