@@ -25,10 +25,7 @@ defmodule SpandexEcto.EctoLogger do
     tracer = config[:tracer] || raise "tracer is a required option for #{inspect(__MODULE__)}"
     service = config[:service] || :ecto
 
-    trace_running? = match?({:ok, %Spandex.SpanContext{}}, tracer.current_context())
-    disabled? = Application.get_env(otp_app, tracer)[:disabled?]
-
-    if trace_running? and not disabled? do
+    if tracer.current_trace_id() do
       now = :os.system_time(:nano_seconds)
       query = string_query(log_entry)
       num_rows = num_rows(log_entry)
