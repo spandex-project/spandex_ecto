@@ -3,15 +3,6 @@ defmodule SpandexEcto.EctoLogger do
   A trace builder that can be given to ecto as a logger. It will try to get
   the trace_id and span_id from the caller pid in the case that the particular
   query is being run asynchronously (as in the case of parallel preloads).
-
-  This module used to attempt to continue a trace in the case of parallel preloads.
-
-  However, we can't rely on caller pid being present in the log entry, as it has
-  been removed. Sending unlinked data in the meantime is not an option. The
-  logic for accessing the process dictionary of the caller was also just plain
-  incorrect. We're going to just have to accept that parallel preloads cannot be
-  tracked until this module is made better. For more information, see:
-  https://github.com/elixir-ecto/ecto/issues/2843
   """
 
   defmodule Error do
