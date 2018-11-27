@@ -12,7 +12,6 @@ defmodule SpandexEcto.EctoLogger do
   def trace(log_entry, database) do
     # Put in your own configuration here
     config = Application.get_env(:spandex_ecto, __MODULE__)
-    otp_app = config[:otp_app] || raise "otp_app is a required option for #{inspect(__MODULE__)}"
     tracer = config[:tracer] || raise "tracer is a required option for #{inspect(__MODULE__)}"
     service = config[:service] || :ecto
 

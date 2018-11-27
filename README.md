@@ -34,7 +34,6 @@ Configuration
 config :spandex_ecto, SpandexEcto.EctoLogger,
   service: :ecto, # Optional
   tracer: MyApp.Tracer, # Required
-  otp_app: :my_app # Required - should line up with the otp app of the tracer
 
 config :my_app, MyApp.Repo,
   loggers: [{Ecto.LogEntry, :log, [:info]}, {SpandexEcto.EctoLogger, :trace, ["database_name"]}]
