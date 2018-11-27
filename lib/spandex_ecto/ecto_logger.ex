@@ -5,12 +5,6 @@ defmodule SpandexEcto.EctoLogger do
   query is being run asynchronously (as in the case of parallel preloads).
   """
 
-  alias Spandex.{
-    Span,
-    SpanContext,
-    Trace
-  }
-
   defmodule Error do
     defexception [:message]
   end
