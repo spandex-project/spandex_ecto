@@ -14,10 +14,15 @@ defmodule SpandexEcto.EctoLogger do
     config = Application.get_env(:spandex_ecto, __MODULE__)
     tracer = config[:tracer] || raise "tracer is a required option for #{inspect(__MODULE__)}"
     service = config[:service] || :ecto
+    truncate = config[:truncate] || 5000
 
     if tracer.current_trace_id() do
       now = :os.system_time(:nano_seconds)
-      query = string_query(log_entry)
+      query =
+        log_entry
+        |> string_query()
+        |> String.slice(0, truncate)
+
       num_rows = num_rows(log_entry)
 
       queue_time = get_time(log_entry, :queue_time)
