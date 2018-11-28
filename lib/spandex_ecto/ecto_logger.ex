@@ -42,7 +42,8 @@ defmodule SpandexEcto.EctoLogger do
           query: query,
           rows: inspect(num_rows),
           db: database
-        ]
+        ],
+        tags: tags(log_entry)
       )
 
       Logger.metadata(trace_id: tracer.current_trace_id(), span_id: tracer.current_span_id())
@@ -106,4 +107,16 @@ defmodule SpandexEcto.EctoLogger do
 
   defp to_nanoseconds(time) when is_integer(time), do: System.convert_time_unit(time, :native, :nanoseconds)
   defp to_nanoseconds(_time), do: 0
+
+  defp tags(%{params: params}) when is_list(params) do
+    param_count =
+      params
+      |> Enum.count()
+      |> to_string()
+
+    [
+      param_count: param_count
+    ]
+  end
+  defp tags(_), do: []
 end
