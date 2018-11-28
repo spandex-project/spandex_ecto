@@ -42,6 +42,9 @@ defmodule SpandexEcto.EctoLogger do
           query: query,
           rows: inspect(num_rows),
           db: database
+        ],
+        tags: [
+          param_count: Enum.count(log_entry.params)
         ]
       )
 
