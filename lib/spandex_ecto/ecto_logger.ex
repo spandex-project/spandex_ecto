@@ -105,7 +105,7 @@ defmodule SpandexEcto.EctoLogger do
     |> to_nanoseconds()
   end
 
-  defp to_nanoseconds(time) when is_integer(time), do: System.convert_time_unit(time, :native, :nanoseconds)
+  defp to_nanoseconds(time) when is_integer(time), do: System.convert_time_unit(time, :native, :nanosecond)
   defp to_nanoseconds(_time), do: 0
 
   defp tags(%{params: params}) when is_list(params) do
