@@ -5,6 +5,15 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v0.5.0](https://github.com/spandex-project/spandex_ecto/compare/0.4.0...v0.5.0) (2019-4-11)
+
+
+
+
+### Features:
+
+* change 'nanoseconds' to 'nanosecond'
+
 ## [v0.4.0](https://github.com/spandex-project/spandex_ecto/compare/0.3.0...v0.4.0) (2018-11-28)
 
 

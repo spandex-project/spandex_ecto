@@ -23,7 +23,7 @@ Add `spandex_ecto` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:spandex_ecto, "~> 0.4.0"}
+    {:spandex_ecto, "~> 0.5.0"}
   ]
 end
 ```
