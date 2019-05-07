@@ -19,9 +19,12 @@ defmodule SpandexEcto.TelemetryAdapter do
       query_time: Map.get(measurements, :query_time, 0),
       decode_time: Map.get(measurements, :decode_time, 0),
       queue_time: Map.get(measurements, :queue_time, 0),
-      result: {metadata.result, "n/a"}
+      result: wrap_result(metadata.result)
     }
 
     EctoLogger.trace(log_entry, "#{repo_name}_database")
   end
+
+  defp wrap_result(result) when is_atom(result), do: {result, "n/a"}
+  defp wrap_result(result), do: result
 end
