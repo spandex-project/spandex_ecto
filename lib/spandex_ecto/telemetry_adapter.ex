@@ -1,4 +1,8 @@
 defmodule SpandexEcto.TelemetryAdapter do
+  @moduledoc """
+  This module provides event handler functions for telemetry
+  """
+
   alias SpandexEcto.EctoLogger
 
   #  this is for ecto_sql 3.0.x
