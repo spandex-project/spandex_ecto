@@ -25,6 +25,12 @@ defmodule SpandexEcto.TelemetryAdapter do
     EctoLogger.trace(log_entry, "#{repo_name}_database")
   end
 
+  def handle_event(event_name, measurements, log_entry, config) when is_list(event_name) do
+    event_name
+    |> tl()
+    |> handle_event(measurements, log_entry, config)
+  end
+
   defp wrap_result(result) when is_atom(result), do: {result, "n/a"}
   defp wrap_result(result), do: result
 end
