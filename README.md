@@ -28,16 +28,34 @@ def deps do
 end
 ```
 
-Configuration
+## Configuration
 
 ```elixir
 config :spandex_ecto, SpandexEcto.EctoLogger,
   service: :ecto, # Optional
   tracer: MyApp.Tracer, # Required
+```
 
+### For Ecto 2
+
+```elixir
 # Be aware that this is a *compile* time configuration. As such, if you change this you
 # may need to `mix compile --force` and/or `mix deps.compile --force ecto`
 config :my_app, MyApp.Repo,
   loggers: [{Ecto.LogEntry, :log, [:info]}, {SpandexEcto.EctoLogger, :trace, ["database_name"]}]
 
+```
+
+### For Ecto 3
+
+```elixir
+# in application.ex
+:telemetry.attach("spandex-query-tracer", [:my_app, :repo_name, :query], &SpandexEcto.TelemetryAdapter.handle_event/4, nil)
+```
+
+If your repo is not named like `MyApp.Repo`, you'll need to set `:telemetry_prefix` in your repo config:
+
+```elixir
+config :my_app, MyApp.Something.RepoName,
+  telemetry_prefix: [:my_app, :repo_name]
 ```
