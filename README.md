@@ -53,6 +53,9 @@ config :my_app, MyApp.Repo,
 :telemetry.attach("spandex-query-tracer", [:my_app, :repo_name, :query], &SpandexEcto.TelemetryAdapter.handle_event/4, nil)
 ```
 
+> NOTE: **If you are upgrading from Ecto 2**, make sure to **remove** the `loggers`
+> entry from your configuration after adding the `:telemetry.attach`.
+
 If your repo is not named like `MyApp.Repo`, you'll need to set `:telemetry_prefix` in your repo config:
 
 ```elixir
