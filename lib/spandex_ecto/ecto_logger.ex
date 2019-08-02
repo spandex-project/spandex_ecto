@@ -16,6 +16,8 @@ defmodule SpandexEcto.EctoLogger do
     service = config[:service] || :ecto
     truncate = config[:truncate] || 5000
 
+    start(log_entry, tracer)
+
     if tracer.current_trace_id() do
       now = :os.system_time(:nano_seconds)
       query =
@@ -31,8 +33,7 @@ defmodule SpandexEcto.EctoLogger do
 
       start = now - (queue_time + query_time + decoding_time)
 
-      tracer.start_span(
-        "query",
+      tracer.update_span(
         start: start,
         completion_time: now,
         service: service,
@@ -84,6 +85,28 @@ defmodule SpandexEcto.EctoLogger do
     end
 
     log_entry
+  end
+
+  defp start(_log_entry, tracer) do
+    case tracer.current_trace_id() do
+      nil ->
+        pid = List.last(Process.get(:"$callers"))
+        {_, trace} = List.keyfind(Process.info(pid)[:dictionary], {:spandex_trace, tracer}, 0)
+
+        case trace do
+          nil ->
+            tracer.start_trace("query")
+
+          %Spandex.Trace{id: trace_id, stack: [%Spandex.Span{id: span_id} | _]} ->
+            tracer.continue_trace("query", %Spandex.SpanContext{trace_id: trace_id, parent_id: span_id})
+
+          %Spandex.Trace{id: trace_id, stack: []} ->
+            tracer.continue_trace("query", %Spandex.SpanContext{trace_id: trace_id})
+        end
+
+      _ ->
+        tracer.start_span("query")
+    end
   end
 
   defp report_error(_tracer, %{result: {:ok, _}}), do: :ok
