@@ -9,6 +9,8 @@ defmodule SpandexEcto.EctoLogger do
     defexception [:message]
   end
 
+  @empty_query_placeholder "unknown (unsupported ecto adapter?)"
+
   def trace(log_entry, database) do
     # Put in your own configuration here
     config = Application.get_env(:spandex_ecto, __MODULE__)
@@ -18,6 +20,7 @@ defmodule SpandexEcto.EctoLogger do
 
     if tracer.current_trace_id() do
       now = :os.system_time(:nano_seconds)
+
       query =
         log_entry
         |> string_query()
@@ -92,9 +95,12 @@ defmodule SpandexEcto.EctoLogger do
     tracer.span_error(%Error{message: inspect(error)}, nil)
   end
 
-  defp string_query(%{query: query}) when is_function(query), do: Macro.unescape_string(query.() || "")
+  defp string_query(%{query: query}) when is_function(query),
+    do: Macro.unescape_string(query.() || @empty_query_placeholder)
+
   defp string_query(%{query: query}) when is_bitstring(query), do: Macro.unescape_string(query)
-  defp string_query(_), do: ""
+  defp string_query(%{query: [first | _]}), do: Macro.unescape_string(first)
+  defp string_query(_), do: @empty_query_placeholder
 
   defp num_rows(%{result: {:ok, %{num_rows: num_rows}}}), do: num_rows
   defp num_rows(_), do: 0
@@ -118,5 +124,6 @@ defmodule SpandexEcto.EctoLogger do
       param_count: param_count
     ]
   end
+
   defp tags(_), do: []
 end
