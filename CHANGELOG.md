@@ -5,6 +5,15 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v0.6.1](https://github.com/spandex-project/spandex_ecto/compare/0.6.0...v0.6.1) (2019-10-14)
+
+
+
+
+### Bug Fixes:
+
+* #9 'mongodb_ecto results in invalid spans'
+
 ## [v0.6.0](https://github.com/spandex-project/spandex_ecto/compare/v0.5.0...v0.6.0) (2019-5-24)
 
 ### Features:
