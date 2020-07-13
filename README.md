@@ -55,10 +55,3 @@ config :my_app, MyApp.Repo,
 
 > NOTE: **If you are upgrading from Ecto 2**, make sure to **remove** the `loggers`
 > entry from your configuration after adding the `:telemetry.attach`.
-
-If your repo is not named like `MyApp.Repo`, you'll need to set `:telemetry_prefix` in your repo config:
-
-```elixir
-config :my_app, MyApp.Something.RepoName,
-  telemetry_prefix: [:my_app, :repo_name]
-```
