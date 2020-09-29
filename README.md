@@ -50,6 +50,8 @@ config :my_app, MyApp.Repo,
 
 ```elixir
 # in application.ex
+# If your repo is called `MyApp.Repo`, use `[:my_app, :repo, :query]`
+# If your repo is called `Foo.Bar.Baz`, use `[:foo, :bar, :baz, :query]`
 :ok = :telemetry.attach("spandex-query-tracer-repo_name", [:my_app, :repo, :query], &SpandexEcto.TelemetryAdapter.handle_event/4, nil)
 ```
 
