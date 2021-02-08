@@ -51,12 +51,23 @@ Then attach it to your repository's telemetry events:
   [:my_app, :repo, :query],
   &SpandexEcto.TelemetryAdapter.handle_event/4,
   # this config will override the global config
+  service: "main-db",
   tracer: MyApp.OtherTracer
 )
 ```
 
 > NOTE: **If you are upgrading from Ecto 2**, make sure to **remove** the `loggers`
 > entry from your configuration after adding `:telemetry.attach/4`.
+
+### Options
+
+The following configuration options are supported:
+
+|Option|Description|Default|
+|-|-|-|
+|`tracer`|Tracer instance to use for reporting traces (*required*)||
+|`service`|Service name for Ecto traces|`ecto`|
+|`truncate`|Maximum length of a query (excess will be truncated)|5000|
 
 ### Ecto 2
 
