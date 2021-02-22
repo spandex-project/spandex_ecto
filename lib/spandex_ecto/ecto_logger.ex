@@ -31,6 +31,7 @@ defmodule SpandexEcto.EctoLogger do
         |> String.slice(0, truncate)
 
       num_rows = num_rows(log_entry)
+      resource = log_entry[:resource] || query
 
       queue_time = get_time(log_entry, :queue_time)
       query_time = get_time(log_entry, :query_time)
@@ -43,7 +44,7 @@ defmodule SpandexEcto.EctoLogger do
         start: start,
         completion_time: now,
         service: service,
-        resource: query,
+        resource: resource,
         type: :db,
         sql_query: [
           query: query,
