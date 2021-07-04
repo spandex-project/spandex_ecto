@@ -11,9 +11,13 @@ defmodule SpandexEcto.EctoLogger do
 
   @empty_query_placeholder "unknown (unsupported ecto adapter?)"
 
-  def trace(log_entry, database) do
+  def trace(log_entry, database, config \\ []) do
     # Put in your own configuration here
-    config = Application.get_env(:spandex_ecto, __MODULE__)
+    config =
+      :spandex_ecto
+      |> Application.get_env(__MODULE__)
+      |> Keyword.merge(config || [])
+
     tracer = config[:tracer] || raise "tracer is a required option for #{inspect(__MODULE__)}"
     service = config[:service] || :ecto
     truncate = config[:truncate] || 5000
