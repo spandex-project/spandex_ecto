@@ -45,14 +45,27 @@ Then attach it to your repository's telemetry events:
 ```elixir
 # lib/my_app/application.ex
 
-:telemetry.attach(
+:ok = :telemetry.attach(
   "spandex-query-tracer",
   # this should match your repo's telemetry prefix
   [:my_app, :repo, :query],
   &SpandexEcto.TelemetryAdapter.handle_event/4,
+  nil
+)
+```
+
+You can override the global configuration by passing overrides to `:telemetry.attach/4` (useful for projects with multiple Ecto repos):
+
+```elixir
+# lib/my_app/application.ex
+
+:ok = :telemetry.attach(
+  "spandex-query-tracer-other-repo",
+  [:my_app, :other_repo, :query],
+  &SpandexEcto.TelemetryAdapter.handle_event/4,
   # this config will override the global config
-  service: "main-db",
-  tracer: MyApp.OtherTracer
+  service: :other_db,
+  tracer: MyApp.OtherRepoTracer
 )
 ```
 
