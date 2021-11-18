@@ -6,7 +6,7 @@
 [![Hex pm](http://img.shields.io/hexpm/v/spandex_ecto.svg?style=flat)](https://hex.pm/packages/spandex_ecto)
 [![SourceLevel](https://sourcelevel.io/github/spandex-project/spandex_ecto.svg)](https://sourcelevel.io/github/spandex-project/spandex_ecto)
 
-Tools for integrating Ecto with Spandex
+Tools for integrating Ecto with Spandex.
 
 ## Limitations
 
@@ -30,30 +30,70 @@ end
 
 ## Configuration
 
+Configure `SpandexEcto` globally in your application config:
+
 ```elixir
+# config/config.exs
+
 config :spandex_ecto, SpandexEcto.EctoLogger,
   service: :ecto, # Optional
   tracer: MyApp.Tracer, # Required
 ```
 
-### For Ecto 2
+Then attach it to your repository's telemetry events:
 
 ```elixir
-# Be aware that this is a *compile* time configuration. As such, if you change this you
-# may need to `mix compile --force` and/or `mix deps.compile --force ecto`
-config :my_app, MyApp.Repo,
-  loggers: [{Ecto.LogEntry, :log, [:info]}, {SpandexEcto.EctoLogger, :trace, ["database_name"]}]
+# lib/my_app/application.ex
 
+:ok = :telemetry.attach(
+  "spandex-query-tracer",
+  # this should match your repo's telemetry prefix
+  [:my_app, :repo, :query],
+  &SpandexEcto.TelemetryAdapter.handle_event/4,
+  nil
+)
 ```
 
-### For Ecto 3
+You can override the global configuration by passing overrides to `:telemetry.attach/4` (useful for projects with multiple Ecto repos):
 
 ```elixir
-# in application.ex
-# If your repo is called `MyApp.Repo`, use `[:my_app, :repo, :query]`
-# If your repo is called `Foo.Bar.Baz`, use `[:foo, :bar, :baz, :query]`
-:ok = :telemetry.attach("spandex-query-tracer-repo_name", [:my_app, :repo, :query], &SpandexEcto.TelemetryAdapter.handle_event/4, nil)
+# lib/my_app/application.ex
+
+:ok = :telemetry.attach(
+  "spandex-query-tracer-other-repo",
+  [:my_app, :other_repo, :query],
+  &SpandexEcto.TelemetryAdapter.handle_event/4,
+  # this config will override the global config
+  service: :other_db,
+  tracer: MyApp.OtherRepoTracer
+)
 ```
 
 > NOTE: **If you are upgrading from Ecto 2**, make sure to **remove** the `loggers`
-> entry from your configuration after adding the `:telemetry.attach`.
+> entry from your configuration after adding `:telemetry.attach/4`.
+
+### Options
+
+The following configuration options are supported:
+
+|Option|Description|Default|
+|-|-|-|
+|`tracer`|Tracer instance to use for reporting traces (*required*)||
+|`service`|Service name for Ecto traces|`ecto`|
+|`truncate`|Maximum length of a query (excess will be truncated)|5000|
+
+### Ecto 2
+
+To integrate `SpandexEcto` with pre-`:telemetry` versions of Ecto you need to add `SpandexEcto.EctoLogger` as a logger to your repository.
+
+Be aware that this is a *compile* time configuration. As such, if you change this you may need to `mix compile --force` and/or `mix deps.compile --force ecto`.
+
+```elixir
+# config/config.exs
+
+config :my_app, MyApp.Repo,
+  loggers: [
+    {Ecto.LogEntry, :log, [:info]},
+    {SpandexEcto.EctoLogger, :trace, ["database_name"]}
+  ]
+```
