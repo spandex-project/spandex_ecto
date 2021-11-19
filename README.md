@@ -76,17 +76,17 @@ You can override the global configuration by passing overrides to `:telemetry.at
 
 The following configuration options are supported:
 
-|Option|Description|Default|
-|-|-|-|
-|`tracer`|Tracer instance to use for reporting traces (*required*)||
-|`service`|Service name for Ecto traces|`ecto`|
-|`truncate`|Maximum length of a query (excess will be truncated)|5000|
+| Option     | Description                                              | Default |
+| ---------- | -------------------------------------------------------- | ------- |
+| `tracer`   | Tracer instance to use for reporting traces (_required_) |         |
+| `service`  | Service name for Ecto traces                             | `ecto`  |
+| `truncate` | Maximum length of a query (excess will be truncated)     | 5000    |
 
 ### Ecto 2
 
 To integrate `SpandexEcto` with pre-`:telemetry` versions of Ecto you need to add `SpandexEcto.EctoLogger` as a logger to your repository.
 
-Be aware that this is a *compile* time configuration. As such, if you change this you may need to `mix compile --force` and/or `mix deps.compile --force ecto`.
+Be aware that this is a _compile_ time configuration. As such, if you change this you may need to `mix compile --force` and/or `mix deps.compile --force ecto`.
 
 ```elixir
 # config/config.exs
@@ -96,4 +96,18 @@ config :my_app, MyApp.Repo,
     {Ecto.LogEntry, :log, [:info]},
     {SpandexEcto.EctoLogger, :trace, ["database_name"]}
   ]
+```
+
+## Customizing Span Resources
+
+By default, SpandexEcto uses the query as name for the span's resource. In
+order get a better feeling for the context of your spans, you can label your
+span's resources using the option [`:telemetry_options`](https://hexdocs.pm/ecto/Ecto.Repo.html#module-shared-options)
+of almost all of `Ecto.Repo`'s repository functions.
+
+### Examples
+
+```elixir
+Repo.all(query, telemetry_options: [spandex_resource: "users-with-addresses"])
+Repo.get!(User, id, telemetry_options: [spandex_resource: "get-user"])
 ```
