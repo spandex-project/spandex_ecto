@@ -1,7 +1,7 @@
 defmodule SpandexEcto.MixProject do
   use Mix.Project
 
-  @version "0.6.2"
+  @version "0.7.0"
 
   def project do
     [
@@ -56,9 +56,6 @@ defmodule SpandexEcto.MixProject do
   defp deps do
     [
       {:ex_doc, ">= 0.0.0", only: :dev},
-      {:excoveralls, "~> 0.10", only: :test},
-      {:git_ops, "~> 0.5", only: :dev},
-      {:inch_ex, github: "rrrene/inch_ex", only: [:dev, :test]},
       {:spandex, "~> 2.2 or ~> 3.0"}
     ]
   end

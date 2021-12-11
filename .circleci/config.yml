@@ -6,7 +6,7 @@ jobs:
   build:
     docker:
       # specify the version here
-      - image: circleci/elixir:1.7
+      - image: cimg/elixir:1.12
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -21,6 +21,5 @@ jobs:
       - run: mix local.hex --force
       - run: mix local.rebar --force
       - run: mix deps.get
+      - run: mix format --check-formatted
       - run: mix compile --warnings-as-errors
-      - run: mix coveralls.circle
-      - run: mix inch.report

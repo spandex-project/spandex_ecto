@@ -1,10 +1,7 @@
 # SpandexEcto
 
 [![CircleCI](https://circleci.com/gh/spandex-project/spandex_ecto.svg?style=svg)](https://circleci.com/gh/spandex-project/spandex_ecto)
-[![Inline docs](http://inch-ci.org/github/spandex-project/spandex_ecto.svg)](http://inch-ci.org/github/spandex-project/spandex_ecto)
-[![Coverage Status](https://coveralls.io/repos/github/spandex-project/spandex_ecto/badge.svg)](https://coveralls.io/github/spandex-project/spandex_ecto)
 [![Hex pm](http://img.shields.io/hexpm/v/spandex_ecto.svg?style=flat)](https://hex.pm/packages/spandex_ecto)
-[![SourceLevel](https://sourcelevel.io/github/spandex-project/spandex_ecto.svg)](https://sourcelevel.io/github/spandex-project/spandex_ecto)
 
 Tools for integrating Ecto with Spandex.
 
@@ -23,7 +20,7 @@ Add `spandex_ecto` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:spandex_ecto, "~> 0.6.2"}
+    {:spandex_ecto, "~> 0.7"}
   ]
 end
 ```
