@@ -19,7 +19,8 @@ defmodule SpandexEcto.TelemetryAdapter do
       query_time: Map.get(measurements, :query_time, 0),
       decode_time: Map.get(measurements, :decode_time, 0),
       queue_time: Map.get(measurements, :queue_time, 0),
-      result: wrap_result(metadata.result)
+      result: wrap_result(metadata.result),
+      resource: get_in(metadata, [:options, :spandex_resource])
     }
 
     EctoLogger.trace(log_entry, "#{repo_name}_database", config)
