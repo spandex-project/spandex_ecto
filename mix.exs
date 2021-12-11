@@ -1,6 +1,7 @@
 defmodule SpandexEcto.MixProject do
   use Mix.Project
 
+  @source_url "https://github.com/spandex-project/spandex_ecto"
   @version "0.7.0"
 
   def project do
@@ -31,9 +32,13 @@ defmodule SpandexEcto.MixProject do
   defp package do
     [
       name: :spandex_ecto,
-      maintainers: ["Zachary Daniel", "Greg Mefford"],
-      licenses: ["MIT License"],
-      links: %{"GitHub" => "https://github.com/spandex-project/spandex_ecto"}
+      maintainers: ["Greg Mefford"],
+      licenses: ["MIT"],
+      links: %{
+        "Changelog" => "https://hexdocs.pm/spandex_ecto/changelog.html",
+        "GitHub" => @source_url,
+        "Sponsor" => "https://github.com/sponsors/GregMefford"
+      }
     ]
   end
 
