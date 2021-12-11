@@ -5,19 +5,33 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [v0.7.0](https://github.com/spandex-project/spandex_ecto/compare/0.6.2...v0.7.0) (2021-12-11)
+
+### What's Changed
+* fix: remove outdated requirements by @novaugust in #23
+* docs: Ecto 3 example update to better guide setups with multiple repos by @rraub in #20
+* Update Telemetry matcher in Readme by @octosteve in #25
+* Allow to configure EctoLogger through :telemetry.attach/4 by @kamilkowalski in #21
+* Add possibility to pass the span's resource through :telemetry_options by @mruoss in #27
+
+### New Contributors
+* @novaugust made their first contribution in #23
+* @rraub made their first contribution in #20
+* @octosteve made their first contribution in #25
+* @kamilkowalski made their first contribution in #21
+* @mruoss made their first contribution in #27
+
+
+
 ## [v0.6.2](https://github.com/spandex-project/spandex_ecto/compare/0.6.1...v0.6.2) (2020-5-26)
-
-
-
 
 ### Bug Fixes:
 
 * update spandex version dependency
 
+
+
 ## [v0.6.1](https://github.com/spandex-project/spandex_ecto/compare/0.6.0...v0.6.1) (2019-10-14)
-
-
-
 
 ### Bug Fixes:
 
