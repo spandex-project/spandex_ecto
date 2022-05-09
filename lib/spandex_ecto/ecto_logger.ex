@@ -119,16 +119,17 @@ defmodule SpandexEcto.EctoLogger do
   defp to_nanoseconds(time) when is_integer(time), do: System.convert_time_unit(time, :native, :nanosecond)
   defp to_nanoseconds(_time), do: 0
 
-  defp tags(%{params: params}) when is_list(params) do
+  defp tags(%{params: params, tags: tags}) when is_list(params) do
     param_count =
       params
       |> Enum.count()
       |> to_string()
 
-    [
+    Keyword.merge(tags,
       param_count: param_count
-    ]
+    )
   end
 
+  defp tags(%{tags: tags}) when is_list(tags), do: tags
   defp tags(_), do: []
 end
