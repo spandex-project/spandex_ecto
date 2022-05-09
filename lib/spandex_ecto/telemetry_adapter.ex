@@ -20,7 +20,8 @@ defmodule SpandexEcto.TelemetryAdapter do
       decode_time: Map.get(measurements, :decode_time, 0),
       queue_time: Map.get(measurements, :queue_time, 0),
       result: wrap_result(metadata.result),
-      resource: get_in(metadata, [:options, :spandex_resource])
+      resource: get_in(metadata, [:options, :spandex_resource]),
+      tags: get_in(metadata, [:options, :spandex_tags]) || []
     }
 
     EctoLogger.trace(log_entry, "#{repo_name}_database", config)

@@ -95,16 +95,16 @@ config :my_app, MyApp.Repo,
   ]
 ```
 
-## Customizing Span Resources
+## Customizing Span Resources and Tags
 
 By default, SpandexEcto uses the query as name for the span's resource. In
 order get a better feeling for the context of your spans, you can label your
-span's resources using the option [`:telemetry_options`](https://hexdocs.pm/ecto/Ecto.Repo.html#module-shared-options)
+span's resources and tags using the option [`:telemetry_options`](https://hexdocs.pm/ecto/Ecto.Repo.html#module-shared-options)
 of almost all of `Ecto.Repo`'s repository functions.
 
 ### Examples
 
 ```elixir
 Repo.all(query, telemetry_options: [spandex_resource: "users-with-addresses"])
-Repo.get!(User, id, telemetry_options: [spandex_resource: "get-user"])
+Repo.get!(User, id, telemetry_options: [spandex_resource: "get-user", spandex_tags: [foo: "bar"]])
 ```
