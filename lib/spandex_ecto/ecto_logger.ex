@@ -60,7 +60,7 @@ defmodule SpandexEcto.EctoLogger do
 
       if queue_time != 0 do
         tracer.start_span("queue")
-        tracer.update_span(service: service, start: start, completion_time: start + queue_time)
+        tracer.update_span(type: :db, service: service, start: start, completion_time: start + queue_time)
         tracer.finish_span()
       end
 
@@ -68,6 +68,7 @@ defmodule SpandexEcto.EctoLogger do
         tracer.start_span("run_query")
 
         tracer.update_span(
+          type: :db,
           service: service,
           start: start + queue_time,
           completion_time: start + queue_time + query_time
@@ -80,6 +81,7 @@ defmodule SpandexEcto.EctoLogger do
         tracer.start_span("decode")
 
         tracer.update_span(
+          type: :db,
           service: service,
           start: start + queue_time + query_time,
           completion_time: now
