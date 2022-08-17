@@ -73,11 +73,12 @@ You can override the global configuration by passing overrides to `:telemetry.at
 
 The following configuration options are supported:
 
-| Option     | Description                                              | Default |
-| ---------- | -------------------------------------------------------- | ------- |
-| `tracer`   | Tracer instance to use for reporting traces (_required_) |         |
-| `service`  | Service name for Ecto traces                             | `ecto`  |
-| `truncate` | Maximum length of a query (excess will be truncated)     | 5000    |
+| Option        | Description                                              | Default |
+| ------------- | -------------------------------------------------------- | ------- |
+| `tracer`      | Tracer instance to use for reporting traces (_required_) |         |
+| `service`     | Service name for Ecto traces                             | `ecto`  |
+| `truncate`    | Maximum length of a query (excess will be truncated)     | 5000    |
+| `query_only?` | Whether to omit queue/run_query/decode timings           | false   |
 
 ### Ecto 2
 
