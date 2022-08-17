@@ -21,6 +21,8 @@ defmodule SpandexEcto.EctoLogger do
     tracer = config[:tracer] || raise "tracer is a required option for #{inspect(__MODULE__)}"
     service = config[:service] || :ecto
     truncate = config[:truncate] || 5000
+    query_only? = config[:query_only?]
+    resource_fun = config[:resource_fun] || (& &1)
 
     if tracer.current_trace_id() do
       now = :os.system_time(:nano_seconds)
@@ -31,7 +33,7 @@ defmodule SpandexEcto.EctoLogger do
         |> String.slice(0, truncate)
 
       num_rows = num_rows(log_entry)
-      resource = log_entry[:resource] || query
+      resource = log_entry[:resource] || resource_fun.(query)
 
       queue_time = get_time(log_entry, :queue_time)
       query_time = get_time(log_entry, :query_time)
@@ -58,34 +60,36 @@ defmodule SpandexEcto.EctoLogger do
 
       report_error(tracer, log_entry)
 
-      if queue_time != 0 do
-        tracer.start_span("queue")
-        tracer.update_span(service: service, start: start, completion_time: start + queue_time)
-        tracer.finish_span()
-      end
+      unless query_only? do
+        if queue_time != 0 do
+          tracer.start_span("queue")
+          tracer.update_span(service: service, start: start, completion_time: start + queue_time)
+          tracer.finish_span()
+        end
 
-      if query_time != 0 do
-        tracer.start_span("run_query")
+        if query_time != 0 do
+          tracer.start_span("run_query")
 
-        tracer.update_span(
-          service: service,
-          start: start + queue_time,
-          completion_time: start + queue_time + query_time
-        )
+          tracer.update_span(
+            service: service,
+            start: start + queue_time,
+            completion_time: start + queue_time + query_time
+          )
 
-        tracer.finish_span()
-      end
+          tracer.finish_span()
+        end
 
-      if decoding_time != 0 do
-        tracer.start_span("decode")
+        if decoding_time != 0 do
+          tracer.start_span("decode")
 
-        tracer.update_span(
-          service: service,
-          start: start + queue_time + query_time,
-          completion_time: now
-        )
+          tracer.update_span(
+            service: service,
+            start: start + queue_time + query_time,
+            completion_time: now
+          )
 
-        tracer.finish_span()
+          tracer.finish_span()
+        end
       end
 
       tracer.finish_span()
