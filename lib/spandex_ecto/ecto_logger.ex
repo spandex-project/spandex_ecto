@@ -22,6 +22,7 @@ defmodule SpandexEcto.EctoLogger do
     service = config[:service] || :ecto
     truncate = config[:truncate] || 5000
     query_only? = config[:query_only?]
+    resource_fun = config[:resource_fun] || (& &1)
 
     if tracer.current_trace_id() do
       now = :os.system_time(:nano_seconds)
@@ -32,7 +33,7 @@ defmodule SpandexEcto.EctoLogger do
         |> String.slice(0, truncate)
 
       num_rows = num_rows(log_entry)
-      resource = log_entry[:resource] || query
+      resource = log_entry[:resource] || resource_fun.(query)
 
       queue_time = get_time(log_entry, :queue_time)
       query_time = get_time(log_entry, :query_time)

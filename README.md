@@ -73,12 +73,13 @@ You can override the global configuration by passing overrides to `:telemetry.at
 
 The following configuration options are supported:
 
-| Option        | Description                                              | Default |
-| ------------- | -------------------------------------------------------- | ------- |
-| `tracer`      | Tracer instance to use for reporting traces (_required_) |         |
-| `service`     | Service name for Ecto traces                             | `ecto`  |
-| `truncate`    | Maximum length of a query (excess will be truncated)     | 5000    |
-| `query_only?` | Whether to omit queue/run_query/decode timings           | false   |
+| Option         | Description                                              | Default |
+| -------------- | -------------------------------------------------------- | ------- |
+| `tracer`       | Tracer instance to use for reporting traces (_required_) |         |
+| `service`      | Service name for Ecto traces                             | `ecto`  |
+| `truncate`     | Maximum length of a query (excess will be truncated)     | 5000    |
+| `query_only?`  | Whether to omit queue/run_query/decode timings           | false   |
+| `resource_fun` | The function to convert a query to span's resource       | & &1    |
 
 ### Ecto 2
 
@@ -109,3 +110,6 @@ of almost all of `Ecto.Repo`'s repository functions.
 Repo.all(query, telemetry_options: [spandex_resource: "users-with-addresses"])
 Repo.get!(User, id, telemetry_options: [spandex_resource: "get-user"])
 ```
+
+Or, you can provide a function to to convert a query to the span's resource to the `resource_fun` option.
+This is applied only the query doesn't have the `spandex_resource` telemetry option.
